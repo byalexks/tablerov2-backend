@@ -20,6 +20,7 @@ app.use( express.json() );
 
 // rutas
 app.use('/api/auth', require('./routes/auth') );
+app.use('/api/board', require('./routes/board') );
 
 
 
