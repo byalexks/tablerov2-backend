@@ -2,31 +2,59 @@ const { response } = require("express");
 const Tablero = require("../models/board-model");
 
 
-const getNotes = (req, res = response) =>{
-    const id = req.params.id;
-    res.json({
-        id  
-    })
+const getNotes = async(req, res = response) =>{
+    
+    try {
+        const {user} = req.params;
+        const boardUser = await Tablero.find({user}).populate("user","name") 
+        const total = await Tablero.count();
+        res.status(200).json({
+          ok: true,
+          board: boardUser,
+          total
+        });
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            ok: false,
+            msg: 'habla con el administrdor'
+        })
+    }
 
 }
 const newNote = async(req, res = response) =>{
     
- try {
-      let board = await Tablero;
-      board = new Tablero(req.body);
-      await board.save();
+  tablero = new Tablero(req.body);
 
-      res.status(201).json({
-        ok: true,
-        tablero: board,
-      });
- } catch (error) {
-     console.log(error)
- } 
+  try {
+    tablero.user = req.uid;
+    const tableroDB = await tablero.save();
+
+    res.json({
+      ok: true,
+      nota: tableroDB,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      ok: false,
+      msg: "hable con el administrador",
+    });
+  }
 
 }
-const deleteNotes = (req, res = response) =>{
-
+const deleteNotes = async(req, res = response) =>{
+ try {
+   const { id } = await req.params;
+   await Tablero.findByIdAndDelete(id);
+   res.json({ ok: false, msg: "board eliminado correctamente" });
+ } catch (error) {
+    console.log(error)
+    return res.status(500).json({
+        ok: false,
+        msg: 'hable con el administrador'
+    })
+ }
 }
 
 module.exports = {
