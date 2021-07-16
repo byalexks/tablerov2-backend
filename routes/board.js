@@ -1,7 +1,12 @@
 const { Router } = require("express");
 const { check } = require("express-validator");
 const { validarCampos } = require("../helpers/validarCampos");
-const { getNotes, newNote, deleteNotes } = require("../controllers/board");
+const {
+  getNotes,
+  newNote,
+  deleteNotes,
+  editNote,
+} = require("../controllers/board");
 const { validarJTW } = require("../helpers/validarJWT");
 
 const app = Router();
@@ -21,7 +26,17 @@ app.post(
   ],
   newNote
 );
-// app.put('/', )
+app.put(
+  "/edit/:id",
+  [
+    check("id", "Este id no es valido").isMongoId(),
+    check("title", "el titulo no puede ir vacio").not().isEmpty(),
+    check("note", "las notas no pueden estar vacias").not().isEmpty(),
+    validarJTW,
+    validarCampos,
+  ],
+  editNote
+);
 app.delete(
   "/:id",
   [check("id", "el id no es valido").isMongoId(), validarJTW, validarCampos],

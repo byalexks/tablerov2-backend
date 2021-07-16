@@ -1,29 +1,25 @@
 const { response } = require("express");
 const Tablero = require("../models/board-model");
 
-
-const getNotes = async(req, res = response) =>{
-    
-    try {
-        const {user} = req.params;
-        const boardUser = await Tablero.find({user}).populate("user","name") 
-        const total = await Tablero.count();
-        res.status(200).json({
-          ok: true,
-          board: boardUser,
-          total
-        });
-    } catch (error) {
-        console.log(error)
-        return res.status(500).json({
-            ok: false,
-            msg: 'habla con el administrdor'
-        })
-    }
-
-}
-const newNote = async(req, res = response) =>{
-    
+const getNotes = async (req, res = response) => {
+  try {
+    const { user } = req.params;
+    const boardUser = await Tablero.find({ user }).populate("user", "name");
+    const total = await Tablero.count();
+    res.status(200).json({
+      ok: true,
+      board: boardUser,
+      total,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      ok: false,
+      msg: "habla con el administrdor",
+    });
+  }
+};
+const newNote = async (req, res = response) => {
   tablero = new Tablero(req.body);
 
   try {
@@ -41,24 +37,58 @@ const newNote = async(req, res = response) =>{
       msg: "hable con el administrador",
     });
   }
+};
+const editNote = async (req, res = response) => {
+  
+  const {id} = req.params;
+   try {
+     const tablero = await Tablero.findById(id);
+     if (!tablero) {
+       return res.status(404).json({
+         ok: false,
+         msg: "evento no existe por ese id",
+       });
+     }
+     const nuevoTablero = {
+       ...req.body,
+       
+     };
 
-}
-const deleteNotes = async(req, res = response) =>{
- try {
-   const { id } = await req.params;
-   await Tablero.findByIdAndDelete(id);
-   res.json({ ok: false, msg: "board eliminado correctamente" });
- } catch (error) {
-    console.log(error)
+     const tableroActualizado = await Tablero.findOneAndUpdate(
+       id,
+       nuevoTablero,
+       { new: true }
+     );
+
+     res.status(201).json({
+       ok: true,
+       tablero: tableroActualizado,
+     });
+   } catch (error) {
+     console.log(error);
+     res.status(500).json({
+       ok: false,
+       msg: "comunicate con el administrador",
+     });
+   }
+};
+const deleteNotes = async (req, res = response) => {
+  try {
+    const { id } = await req.params;
+    await Tablero.findByIdAndDelete(id);
+    res.json({ ok: false, msg: "board eliminado correctamente" });
+  } catch (error) {
+    console.log(error);
     return res.status(500).json({
-        ok: false,
-        msg: 'hable con el administrador'
-    })
- }
-}
+      ok: false,
+      msg: "hable con el administrador",
+    });
+  }
+};
 
 module.exports = {
-    getNotes,
-    newNote,
-    deleteNotes
-}
+  getNotes,
+  newNote,
+  editNote,
+  deleteNotes,
+};
