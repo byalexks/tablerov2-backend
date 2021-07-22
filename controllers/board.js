@@ -4,11 +4,12 @@ const Tablero = require("../models/board-model");
 const getNotes = async (req, res = response) => {
   try {
     const { user } = req.params;
-    const boardUser = await Tablero.find({ user }).populate("user", "name");
-    const total = await Tablero.count();
+    const boardUser = await Tablero.find({ user })
+    .populate("user", "name");
+    const total = await Tablero.countDocuments();
     res.status(200).json({
       ok: true,
-      board: boardUser,
+      boardUser,
       total,
     });
   } catch (error) {
@@ -19,6 +20,26 @@ const getNotes = async (req, res = response) => {
     });
   }
 };
+const getNote = async (req, res = response) => {
+
+  try{
+    const id = req.params.id;
+    const boardUnique = await Tablero.find({id})
+    .populate('user','name')
+    res.status(200).json({
+      ok:true,
+      boardUnique
+    })
+  } catch(error) {
+    console.log(error);
+    res.status(400).json({
+      ok: false,
+      msg: "hable con el administrador",
+    });
+
+  }
+
+}
 const newNote = async (req, res = response) => {
   tablero = new Tablero(req.body);
 
@@ -88,6 +109,7 @@ const deleteNotes = async (req, res = response) => {
 
 module.exports = {
   getNotes,
+  getNote,
   newNote,
   editNote,
   deleteNotes,

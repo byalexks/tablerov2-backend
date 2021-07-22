@@ -3,6 +3,7 @@ const { check } = require("express-validator");
 const { validarCampos } = require("../helpers/validarCampos");
 const {
   getNotes,
+  getNote,
   newNote,
   deleteNotes,
   editNote,
@@ -15,6 +16,11 @@ app.get(
   "/:user",
   [check("user", "el id no es valido").isMongoId(), validarJTW, validarCampos],
   getNotes
+);
+app.get(
+  "/b/:id",
+  [ validarJTW],
+  getNote
 );
 app.post(
   "/new",
