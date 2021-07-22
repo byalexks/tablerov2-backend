@@ -23,8 +23,9 @@ const getNote = async (req, res = response) => {
 
   try{
     const id = req.params.id;
-    const boardUnique = await Tablero.find({id})
+    const boardUnique = await Tablero.findById(id)
     .populate('user','name')
+    console.log(boardUnique);
     res.status(200).json({
       ok:true,
       boardUnique
