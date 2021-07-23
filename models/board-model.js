@@ -11,7 +11,7 @@ const BoardSchema = Schema({
   },
   date: {
     type: Date,
-    default: new Date(),
+    default: new Date.now(),
   },
   user: {
     type: Schema.Types.ObjectId,

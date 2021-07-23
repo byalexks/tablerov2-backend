@@ -72,6 +72,7 @@ const editNote = async (req, res = response) => {
 		}
 		const nuevoTablero = {
 			...req.body,
+			date: new Date.now(),
 		};
 
 
