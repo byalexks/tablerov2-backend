@@ -20,26 +20,22 @@ const getNotes = async (req, res = response) => {
 	}
 };
 const getNote = async (req, res = response) => {
-
-  try{
-    const id = req.params.id;
-    const boardUnique = await Tablero.findById(id)
-    .populate('user','name')
-    console.log(boardUnique);
-    res.status(200).json({
-      ok:true,
-      boardUnique
-    })
-  } catch(error) {
-    console.log(error);
-    res.status(400).json({
-      ok: false,
-      msg: "hable con el administrador",
-    });
-
-  }
-
-}
+	try {
+		const id = req.params.id;
+		const boardUnique = await Tablero.findById(id).populate('user', 'name');
+		console.log(boardUnique);
+		res.status(200).json({
+			ok: true,
+			boardUnique,
+		});
+	} catch (error) {
+		console.log(error);
+		res.status(400).json({
+			ok: false,
+			msg: 'hable con el administrador',
+		});
+	}
+};
 const newNote = async (req, res = response) => {
 	tablero = new Tablero(req.body);
 
@@ -72,17 +68,13 @@ const editNote = async (req, res = response) => {
 		}
 		const nuevoTablero = {
 			...req.body,
-			date: new Date.now(),
 		};
-
 
 		const tableroActualizado = await Tablero.findByIdAndUpdate(
 			id,
 			nuevoTablero,
 			{ new: true, runValidators: true }
 		);
-
-		
 
 		res.status(201).json({
 			ok: true,
@@ -111,9 +103,9 @@ const deleteNotes = async (req, res = response) => {
 };
 
 module.exports = {
-  getNotes,
-  getNote,
-  newNote,
-  editNote,
-  deleteNotes,
+	getNotes,
+	getNote,
+	newNote,
+	editNote,
+	deleteNotes,
 };
